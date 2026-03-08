@@ -4,28 +4,28 @@ declare(strict_types=1);
 
 namespace LumenSistemas\Asaas\DTOs\Customer;
 
-class UpdateCustomerData
+readonly class UpdateCustomerData
 {
     public function __construct(
-        public readonly ?string $name = null,
-        public readonly ?string $cpfCnpj = null,
-        public readonly ?string $email = null,
-        public readonly ?string $phone = null,
-        public readonly ?string $mobilePhone = null,
-        public readonly ?string $address = null,
-        public readonly ?string $addressNumber = null,
-        public readonly ?string $complement = null,
-        public readonly ?string $province = null,
-        public readonly ?string $postalCode = null,
-        public readonly ?string $externalReference = null,
-        public readonly ?bool $notificationDisabled = null,
-        public readonly ?string $additionalEmails = null,
-        public readonly ?string $municipalInscription = null,
-        public readonly ?string $stateInscription = null,
-        public readonly ?string $observations = null,
-        public readonly ?string $groupName = null,
-        public readonly ?string $company = null,
-        public readonly ?bool $foreignCustomer = null,
+        public ?string $name = null,
+        public ?string $cpfCnpj = null,
+        public ?string $email = null,
+        public ?string $phone = null,
+        public ?string $mobilePhone = null,
+        public ?string $address = null,
+        public ?string $addressNumber = null,
+        public ?string $complement = null,
+        public ?string $province = null,
+        public ?string $postalCode = null,
+        public ?string $externalReference = null,
+        public ?bool $notificationDisabled = null,
+        public ?string $additionalEmails = null,
+        public ?string $municipalInscription = null,
+        public ?string $stateInscription = null,
+        public ?string $observations = null,
+        public ?string $groupName = null,
+        public ?string $company = null,
+        public ?bool $foreignCustomer = null,
     ) {}
 
     /** @return array<string, mixed> */

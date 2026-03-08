@@ -6,28 +6,28 @@ namespace LumenSistemas\Asaas\DTOs\Customer;
 
 use InvalidArgumentException;
 
-class CreateCustomerData
+readonly class CreateCustomerData
 {
     public function __construct(
-        public readonly string $name,
-        public readonly string $cpfCnpj,
-        public readonly ?string $email = null,
-        public readonly ?string $phone = null,
-        public readonly ?string $mobilePhone = null,
-        public readonly ?string $address = null,
-        public readonly ?string $addressNumber = null,
-        public readonly ?string $complement = null,
-        public readonly ?string $province = null,
-        public readonly ?string $postalCode = null,
-        public readonly ?string $externalReference = null,
-        public readonly bool $notificationDisabled = false,
-        public readonly ?string $additionalEmails = null,
-        public readonly ?string $municipalInscription = null,
-        public readonly ?string $stateInscription = null,
-        public readonly ?string $observations = null,
-        public readonly ?string $groupName = null,
-        public readonly ?string $company = null,
-        public readonly bool $foreignCustomer = false,
+        public string $name,
+        public string $cpfCnpj,
+        public ?string $email = null,
+        public ?string $phone = null,
+        public ?string $mobilePhone = null,
+        public ?string $address = null,
+        public ?string $addressNumber = null,
+        public ?string $complement = null,
+        public ?string $province = null,
+        public ?string $postalCode = null,
+        public ?string $externalReference = null,
+        public bool $notificationDisabled = false,
+        public ?string $additionalEmails = null,
+        public ?string $municipalInscription = null,
+        public ?string $stateInscription = null,
+        public ?string $observations = null,
+        public ?string $groupName = null,
+        public ?string $company = null,
+        public bool $foreignCustomer = false,
     ) {
         if (mb_trim($this->name) === '') {
             throw new InvalidArgumentException('Customer name cannot be empty.');

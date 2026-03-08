@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace LumenSistemas\Asaas\DTOs\Customer;
 
-class CustomerListFilters
+readonly class CustomerListFilters
 {
     public function __construct(
-        public readonly int $offset = 0,
-        public readonly int $limit = 10,
-        public readonly ?string $name = null,
-        public readonly ?string $email = null,
-        public readonly ?string $cpfCnpj = null,
-        public readonly ?string $groupName = null,
-        public readonly ?string $externalReference = null,
+        public int $offset = 0,
+        public int $limit = 10,
+        public ?string $name = null,
+        public ?string $email = null,
+        public ?string $cpfCnpj = null,
+        public ?string $groupName = null,
+        public ?string $externalReference = null,
     ) {}
 
     /** @return array<string, mixed> */

@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace LumenSistemas\Asaas\DTOs\Customer;
 
-class CustomerListResult
+readonly class CustomerListResult
 {
     /** @param CustomerData[] $data */
     public function __construct(
-        public readonly array $data,
-        public readonly bool $hasMore,
-        public readonly int $totalCount,
-        public readonly int $limit,
-        public readonly int $offset,
+        public array $data,
+        public bool $hasMore,
+        public int $totalCount,
+        public int $limit,
+        public int $offset,
     ) {}
 
     /**
