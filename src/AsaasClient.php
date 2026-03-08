@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LumenSistemas\Asaas;
 
 use Illuminate\Http\Client\PendingRequest;
@@ -18,7 +20,8 @@ class AsaasClient implements AsaasClientInterface
      */
     public function __construct(
         private readonly AsaasEnvironment $environment,
-        #[SensitiveParameter] private readonly string $defaultApiKey,
+        #[SensitiveParameter]
+        private readonly string $defaultApiKey,
         private readonly int $timeout = 30,
         private readonly int $connectTimeout = 10,
         private readonly string $userAgent = 'lumensistemas/asaas-laravel',
@@ -77,7 +80,9 @@ class AsaasClient implements AsaasClientInterface
     private function decode(Response $response): mixed
     {
         if ($response->failed()) {
-            throw new AsaasApiException($response, $response->json('errors') ?? []);
+            /** @var array<array{code: string, description: string}> $errors */
+            $errors = $response->json('errors') ?? [];
+            throw new AsaasApiException($response, $errors);
         }
 
         return $response->body() !== '' ? $response->json() : null;

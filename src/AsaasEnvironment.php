@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LumenSistemas\Asaas;
 
 enum AsaasEnvironment: string
 {
     case Production = 'production';
-    case Sandbox    = 'sandbox';
+    case Sandbox = 'sandbox';
 
     public function baseUrl(): string
     {
         return match ($this) {
             self::Production => 'https://api.asaas.com',
-            self::Sandbox    => 'https://api-sandbox.asaas.com',
+            self::Sandbox => 'https://api-sandbox.asaas.com',
         };
     }
 

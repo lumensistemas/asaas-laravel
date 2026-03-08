@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LumenSistemas\Asaas\Tests;
 
 use Illuminate\Support\Facades\Http;

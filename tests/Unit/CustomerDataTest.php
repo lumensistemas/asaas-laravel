@@ -5,18 +5,18 @@ use LumenSistemas\Asaas\DTOs\Customer\CustomerData;
 use LumenSistemas\Asaas\DTOs\Customer\CustomerListFilters;
 use LumenSistemas\Asaas\DTOs\Customer\UpdateCustomerData;
 
-describe('CustomerData', function () {
-    it('deserializes from a full API response', function () {
+describe('CustomerData', function (): void {
+    it('deserializes from a full API response', function (): void {
         $data = CustomerData::fromArray([
-            'id'                  => 'cus_123',
-            'name'                => 'John Doe',
-            'cpfCnpj'             => '24971563792',
-            'personType'          => 'FISICA',
-            'deleted'             => false,
-            'dateCreated'         => '2024-07-12',
-            'email'               => 'john@example.com',
+            'id' => 'cus_123',
+            'name' => 'John Doe',
+            'cpfCnpj' => '24971563792',
+            'personType' => 'FISICA',
+            'deleted' => false,
+            'dateCreated' => '2024-07-12',
+            'email' => 'john@example.com',
             'notificationDisabled' => true,
-            'foreignCustomer'     => false,
+            'foreignCustomer' => false,
         ]);
 
         expect($data->id)->toBe('cus_123')
@@ -28,12 +28,12 @@ describe('CustomerData', function () {
             ->and($data->notificationDisabled)->toBeTrue();
     });
 
-    it('defaults optional fields to null or false', function () {
+    it('defaults optional fields to null or false', function (): void {
         $data = CustomerData::fromArray([
-            'id'       => 'cus_456',
-            'name'     => 'Jane',
-            'cpfCnpj'  => '11122233344',
-            'deleted'  => false,
+            'id' => 'cus_456',
+            'name' => 'Jane',
+            'cpfCnpj' => '11122233344',
+            'deleted' => false,
         ]);
 
         expect($data->email)->toBeNull()
@@ -44,8 +44,8 @@ describe('CustomerData', function () {
     });
 });
 
-describe('CreateCustomerData', function () {
-    it('strips null fields from toArray()', function () {
+describe('CreateCustomerData', function (): void {
+    it('strips null fields from toArray()', function (): void {
         $dto = new CreateCustomerData(
             name: 'John Doe',
             cpfCnpj: '24971563792',
@@ -60,7 +60,7 @@ describe('CreateCustomerData', function () {
             ->not->toHaveKey('address');
     });
 
-    it('includes notificationDisabled when true', function () {
+    it('includes notificationDisabled when true', function (): void {
         $dto = new CreateCustomerData(
             name: 'John',
             cpfCnpj: '24971563792',
@@ -70,15 +70,23 @@ describe('CreateCustomerData', function () {
         expect($dto->toArray())->toHaveKey('notificationDisabled', true);
     });
 
-    it('excludes notificationDisabled when false', function () {
+    it('excludes notificationDisabled when false', function (): void {
         $dto = new CreateCustomerData(name: 'John', cpfCnpj: '24971563792');
 
         expect($dto->toArray())->not->toHaveKey('notificationDisabled');
     });
+
+    it('throws when name is empty', function (): void {
+        new CreateCustomerData(name: '', cpfCnpj: '24971563792');
+    })->throws(InvalidArgumentException::class, 'Customer name cannot be empty.');
+
+    it('throws when cpfCnpj is empty', function (): void {
+        new CreateCustomerData(name: 'John', cpfCnpj: '');
+    })->throws(InvalidArgumentException::class, 'Customer cpfCnpj cannot be empty.');
 });
 
-describe('UpdateCustomerData', function () {
-    it('only includes non-null fields', function () {
+describe('UpdateCustomerData', function (): void {
+    it('only includes non-null fields', function (): void {
         $dto = new UpdateCustomerData(name: 'Updated Name');
 
         $payload = $dto->toArray();
@@ -87,20 +95,20 @@ describe('UpdateCustomerData', function () {
     });
 });
 
-describe('CustomerListFilters', function () {
-    it('always includes offset and limit', function () {
+describe('CustomerListFilters', function (): void {
+    it('always includes offset and limit', function (): void {
         $filters = new CustomerListFilters();
 
         expect($filters->toArray())->toMatchArray(['offset' => 0, 'limit' => 10]);
     });
 
-    it('caps limit at 100', function () {
+    it('caps limit at 100', function (): void {
         $filters = new CustomerListFilters(limit: 200);
 
         expect($filters->toArray()['limit'])->toBe(100);
     });
 
-    it('includes optional filters when set', function () {
+    it('includes optional filters when set', function (): void {
         $filters = new CustomerListFilters(name: 'John', cpfCnpj: '24971563792');
 
         expect($filters->toArray())

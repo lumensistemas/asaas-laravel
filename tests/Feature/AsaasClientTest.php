@@ -13,35 +13,35 @@ function sandboxClient(string $apiKey = 'test_key'): AsaasClient
     );
 }
 
-describe('AsaasClient', function () {
-    it('sends the access_token header on every request', function () {
+describe('AsaasClient', function (): void {
+    it('sends the access_token header on every request', function (): void {
         Http::fake(['*' => Http::response(['id' => 'cus_1'])]);
 
         sandboxClient('my_secret_key')->get('/v3/customers/cus_1');
 
-        Http::assertSent(fn ($request) => $request->header('access_token')[0] === 'my_secret_key');
+        Http::assertSent(fn ($request): bool => $request->header('access_token')[0] === 'my_secret_key');
     });
 
-    it('sends the default User-Agent header', function () {
+    it('sends the default User-Agent header', function (): void {
         Http::fake(['*' => Http::response(['id' => 'cus_1'])]);
 
         sandboxClient()->get('/v3/customers/cus_1');
 
-        Http::assertSent(fn ($request) => str_contains(
+        Http::assertSent(fn ($request): bool => str_contains(
             $request->header('User-Agent')[0] ?? '',
             'lumensistemas/asaas-laravel'
         ));
     });
 
-    it('uses the key from withApiKey() instead of the default', function () {
+    it('uses the key from withApiKey() instead of the default', function (): void {
         Http::fake(['*' => Http::response(['id' => 'cus_1'])]);
 
         sandboxClient('default_key')->withApiKey('tenant_key')->get('/v3/customers/cus_1');
 
-        Http::assertSent(fn ($request) => $request->header('access_token')[0] === 'tenant_key');
+        Http::assertSent(fn ($request): bool => $request->header('access_token')[0] === 'tenant_key');
     });
 
-    it('does not mutate the original instance when calling withApiKey()', function () {
+    it('does not mutate the original instance when calling withApiKey()', function (): void {
         Http::fake(['*' => Http::response(['id' => 'cus_1'])]);
 
         $original = sandboxClient('original_key');
@@ -49,18 +49,18 @@ describe('AsaasClient', function () {
 
         $original->get('/v3/customers/cus_1');
 
-        Http::assertSent(fn ($request) => $request->header('access_token')[0] === 'original_key');
+        Http::assertSent(fn ($request): bool => $request->header('access_token')[0] === 'original_key');
     });
 
-    it('merges extra headers set via withHeaders()', function () {
+    it('merges extra headers set via withHeaders()', function (): void {
         Http::fake(['*' => Http::response(['id' => 'cus_1'])]);
 
         sandboxClient()->withHeaders(['X-Custom' => 'abc'])->get('/v3/customers/cus_1');
 
-        Http::assertSent(fn ($request) => $request->header('X-Custom')[0] === 'abc');
+        Http::assertSent(fn ($request): bool => $request->header('X-Custom')[0] === 'abc');
     });
 
-    it('does not mutate the original instance when calling withHeaders()', function () {
+    it('does not mutate the original instance when calling withHeaders()', function (): void {
         Http::fake(['*' => Http::response(['id' => 'cus_1'])]);
 
         $original = sandboxClient();
@@ -68,27 +68,27 @@ describe('AsaasClient', function () {
 
         $original->get('/v3/customers/cus_1');
 
-        Http::assertSent(fn ($request) => empty($request->header('X-Custom')));
+        Http::assertSent(fn ($request): bool => empty($request->header('X-Custom')));
     });
 
-    it('hits the sandbox base URL', function () {
+    it('hits the sandbox base URL', function (): void {
         Http::fake(['api-sandbox.asaas.com/*' => Http::response(['id' => 'cus_1'])]);
 
         sandboxClient()->get('/v3/customers/cus_1');
 
-        Http::assertSent(fn ($request) => str_contains($request->url(), 'api-sandbox.asaas.com'));
+        Http::assertSent(fn ($request): bool => str_contains((string) $request->url(), 'api-sandbox.asaas.com'));
     });
 
-    it('hits the production base URL when environment is production', function () {
+    it('hits the production base URL when environment is production', function (): void {
         Http::fake(['api.asaas.com/*' => Http::response(['id' => 'cus_1'])]);
 
         $client = new AsaasClient(AsaasEnvironment::Production, 'key');
         $client->get('/v3/customers/cus_1');
 
-        Http::assertSent(fn ($request) => str_contains($request->url(), 'api.asaas.com'));
+        Http::assertSent(fn ($request): bool => str_contains((string) $request->url(), 'api.asaas.com'));
     });
 
-    it('throws AsaasApiException on a 4xx response', function () {
+    it('throws AsaasApiException on a 4xx response', function (): void {
         Http::fake(['*' => Http::response(
             ['errors' => [['code' => 'invalid_cpfCnpj', 'description' => 'CPF/CNPJ inválido']]],
             422
@@ -97,7 +97,7 @@ describe('AsaasClient', function () {
         sandboxClient()->post('/v3/customers', ['name' => 'X', 'cpfCnpj' => '000']);
     })->throws(AsaasApiException::class);
 
-    it('exposes errors and status code from AsaasApiException', function () {
+    it('exposes errors and status code from AsaasApiException', function (): void {
         Http::fake(['*' => Http::response(
             ['errors' => [['code' => 'invalid_access_token', 'description' => 'Token inválido']]],
             401
@@ -112,7 +112,7 @@ describe('AsaasClient', function () {
         }
     });
 
-    it('returns null for empty response bodies', function () {
+    it('returns null for empty response bodies', function (): void {
         Http::fake(['*' => Http::response('', 200)]);
 
         $result = sandboxClient()->delete('/v3/customers/cus_1');

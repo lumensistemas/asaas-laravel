@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LumenSistemas\Asaas\Services;
 
 use LumenSistemas\Asaas\Contracts\AsaasClientInterface;
@@ -17,7 +19,8 @@ class CustomerService
 
     public function list(?CustomerListFilters $filters = null): CustomerListResult
     {
-        $query = $filters ? $filters->toArray() : [];
+        $query = $filters instanceof CustomerListFilters ? $filters->toArray() : [];
+        /** @var array{data?: array<int, array{id: string, name: string, cpfCnpj: string, personType?: string, deleted?: bool, dateCreated?: null|string, email?: null|string, phone?: null|string, mobilePhone?: null|string, address?: null|string, addressNumber?: null|string, complement?: null|string, province?: null|string, city?: null|int, cityName?: null|string, state?: null|string, country?: null|string, postalCode?: null|string, additionalEmails?: null|string, externalReference?: null|string, notificationDisabled?: bool, observations?: null|string, foreignCustomer?: bool, groupName?: null|string, company?: null|string}>, hasMore?: bool, totalCount?: int, limit?: int, offset?: int} $response */
         $response = $this->client->get('/v3/customers', $query);
 
         return CustomerListResult::fromArray($response);
@@ -25,13 +28,15 @@ class CustomerService
 
     public function find(string $id): CustomerData
     {
-        $response = $this->client->get("/v3/customers/{$id}");
+        /** @var array{id: string, name: string, cpfCnpj: string, personType?: string, deleted?: bool, dateCreated?: null|string, email?: null|string, phone?: null|string, mobilePhone?: null|string, address?: null|string, addressNumber?: null|string, complement?: null|string, province?: null|string, city?: null|int, cityName?: null|string, state?: null|string, country?: null|string, postalCode?: null|string, additionalEmails?: null|string, externalReference?: null|string, notificationDisabled?: bool, observations?: null|string, foreignCustomer?: bool, groupName?: null|string, company?: null|string} $response */
+        $response = $this->client->get('/v3/customers/'.$id);
 
         return CustomerData::fromArray($response);
     }
 
     public function create(CreateCustomerData $data): CustomerData
     {
+        /** @var array{id: string, name: string, cpfCnpj: string, personType?: string, deleted?: bool, dateCreated?: null|string, email?: null|string, phone?: null|string, mobilePhone?: null|string, address?: null|string, addressNumber?: null|string, complement?: null|string, province?: null|string, city?: null|int, cityName?: null|string, state?: null|string, country?: null|string, postalCode?: null|string, additionalEmails?: null|string, externalReference?: null|string, notificationDisabled?: bool, observations?: null|string, foreignCustomer?: bool, groupName?: null|string, company?: null|string} $response */
         $response = $this->client->post('/v3/customers', $data->toArray());
 
         return CustomerData::fromArray($response);
@@ -39,21 +44,24 @@ class CustomerService
 
     public function update(string $id, UpdateCustomerData $data): CustomerData
     {
-        $response = $this->client->put("/v3/customers/{$id}", $data->toArray());
+        /** @var array{id: string, name: string, cpfCnpj: string, personType?: string, deleted?: bool, dateCreated?: null|string, email?: null|string, phone?: null|string, mobilePhone?: null|string, address?: null|string, addressNumber?: null|string, complement?: null|string, province?: null|string, city?: null|int, cityName?: null|string, state?: null|string, country?: null|string, postalCode?: null|string, additionalEmails?: null|string, externalReference?: null|string, notificationDisabled?: bool, observations?: null|string, foreignCustomer?: bool, groupName?: null|string, company?: null|string} $response */
+        $response = $this->client->put('/v3/customers/'.$id, $data->toArray());
 
         return CustomerData::fromArray($response);
     }
 
     public function delete(string $id): bool
     {
-        $response = $this->client->delete("/v3/customers/{$id}");
+        /** @var array{deleted?: bool} $response */
+        $response = $this->client->delete('/v3/customers/'.$id);
 
         return $response['deleted'] ?? false;
     }
 
     public function restore(string $id): CustomerData
     {
-        $response = $this->client->post("/v3/customers/{$id}/restore");
+        /** @var array{id: string, name: string, cpfCnpj: string, personType?: string, deleted?: bool, dateCreated?: null|string, email?: null|string, phone?: null|string, mobilePhone?: null|string, address?: null|string, addressNumber?: null|string, complement?: null|string, province?: null|string, city?: null|int, cityName?: null|string, state?: null|string, country?: null|string, postalCode?: null|string, additionalEmails?: null|string, externalReference?: null|string, notificationDisabled?: bool, observations?: null|string, foreignCustomer?: bool, groupName?: null|string, company?: null|string} $response */
+        $response = $this->client->post(sprintf('/v3/customers/%s/restore', $id));
 
         return CustomerData::fromArray($response);
     }

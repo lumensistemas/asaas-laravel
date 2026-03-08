@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LumenSistemas\Asaas\Exceptions;
 
 use RuntimeException;
+use Throwable;
 
 class AsaasException extends RuntimeException
 {
@@ -11,7 +14,7 @@ class AsaasException extends RuntimeException
         string $message,
         public readonly array $errors = [],
         int $code = 0,
-        ?\Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct($message, $code, $previous);
     }

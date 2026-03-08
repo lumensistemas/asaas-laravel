@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LumenSistemas\Asaas;
 
 use LumenSistemas\Asaas\Contracts\AsaasClientInterface;
 use LumenSistemas\Asaas\Services\CustomerService;
 
-class Asaas
+final readonly class Asaas
 {
     public function __construct(
-        private readonly AsaasClientInterface $client,
+        private AsaasClientInterface $client,
     ) {}
 
     /**
@@ -17,7 +19,7 @@ class Asaas
      */
     public function withApiKey(string $apiKey): static
     {
-        return new static($this->client->withApiKey($apiKey));
+        return new self($this->client->withApiKey($apiKey));
     }
 
     public function customers(): CustomerService

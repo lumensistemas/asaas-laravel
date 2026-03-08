@@ -1,18 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LumenSistemas\Asaas\Exceptions;
 
 use Illuminate\Http\Client\Response;
+use Throwable;
 
 class AsaasApiException extends AsaasException
 {
     public function __construct(
         public readonly Response $response,
         array $errors = [],
-        ?\Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         $statusCode = $response->status();
-        $message = "Asaas API error [{$statusCode}]";
+        $message = sprintf('Asaas API error [%d]', $statusCode);
 
         if ($errors !== []) {
             $descriptions = array_column($errors, 'description');

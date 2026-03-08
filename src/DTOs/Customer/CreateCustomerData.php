@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LumenSistemas\Asaas\DTOs\Customer;
+
+use InvalidArgumentException;
 
 class CreateCustomerData
 {
@@ -24,7 +28,15 @@ class CreateCustomerData
         public readonly ?string $groupName = null,
         public readonly ?string $company = null,
         public readonly bool $foreignCustomer = false,
-    ) {}
+    ) {
+        if (mb_trim($this->name) === '') {
+            throw new InvalidArgumentException('Customer name cannot be empty.');
+        }
+
+        if (mb_trim($this->cpfCnpj) === '') {
+            throw new InvalidArgumentException('Customer cpfCnpj cannot be empty.');
+        }
+    }
 
     /** @return array<string, mixed> */
     public function toArray(): array
@@ -49,6 +61,6 @@ class CreateCustomerData
             'groupName' => $this->groupName,
             'company' => $this->company,
             'foreignCustomer' => $this->foreignCustomer ? true : null,
-        ], fn (string|bool|null $v): bool => $v !== null);
+        ], fn (null|bool|string $v): bool => $v !== null);
     }
 }

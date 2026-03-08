@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LumenSistemas\Asaas\DTOs\Customer;
 
 class UpdateCustomerData
@@ -49,6 +51,6 @@ class UpdateCustomerData
             'groupName' => $this->groupName,
             'company' => $this->company,
             'foreignCustomer' => $this->foreignCustomer,
-        ], fn (null|string|bool $v): bool => $v !== null);
+        ], fn (null|bool|string $v): bool => $v !== null);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LumenSistemas\Asaas\DTOs\Customer;
 
 class CustomerData
@@ -32,7 +34,35 @@ class CustomerData
         public readonly ?string $company = null,
     ) {}
 
-    /** @param array<string, mixed> $data */
+    /**
+     * @param array{
+     *     id: string,
+     *     name: string,
+     *     cpfCnpj: string,
+     *     personType?: string,
+     *     deleted?: bool,
+     *     dateCreated?: null|string,
+     *     email?: null|string,
+     *     phone?: null|string,
+     *     mobilePhone?: null|string,
+     *     address?: null|string,
+     *     addressNumber?: null|string,
+     *     complement?: null|string,
+     *     province?: null|string,
+     *     city?: null|int,
+     *     cityName?: null|string,
+     *     state?: null|string,
+     *     country?: null|string,
+     *     postalCode?: null|string,
+     *     additionalEmails?: null|string,
+     *     externalReference?: null|string,
+     *     notificationDisabled?: bool,
+     *     observations?: null|string,
+     *     foreignCustomer?: bool,
+     *     groupName?: null|string,
+     *     company?: null|string,
+     * } $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(

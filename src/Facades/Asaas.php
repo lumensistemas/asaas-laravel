@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LumenSistemas\Asaas\Facades;
 
-use LumenSistemas\Asaas\Services\CustomerService;
 use Illuminate\Support\Facades\Facade;
+use LumenSistemas\Asaas\Services\CustomerService;
 
 /**
  * @method static \LumenSistemas\Asaas\Asaas withApiKey(string $apiKey)

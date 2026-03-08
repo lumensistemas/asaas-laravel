@@ -127,6 +127,9 @@ The singleton registered in the container is **never mutated**; `withApiKey` clo
 | Errors | Check `$response->failed()`, read `$response->json('errors')`, throw `AsaasApiException` |
 | Http client | Use `->asJson()` for POST/PUT body; pass query array as second arg to `->get()` |
 | Tests | Use `Http::fake()` — never hit the real API in tests |
+| Static analysis | PHPStan level max; zero errors required |
+| Linting | `composer lint` (Rector + PHP-CS-Fixer) before every commit |
+| DTO validation | Required string fields must reject empty strings via `mb_trim() === ''` in the constructor |
 | Config publish tag | `asaas-config` |
 | Facade alias | `Asaas` |
 
@@ -140,6 +143,37 @@ The singleton registered in the container is **never mutated**; `withApiKey` clo
 | `ASAAS_ENVIRONMENT` | `sandbox` | `sandbox` or `production` |
 
 ---
+
+## Code quality
+
+Three tools are configured and must pass before committing:
+
+| Tool | Command | Purpose |
+|---|---|---|
+| Rector | `composer lint` (first step) | Automated refactoring and modernisation |
+| PHP-CS-Fixer | `composer lint` (second step) | Code style enforcement |
+| PHPStan | `composer analyse` | Static analysis at level `max` |
+
+Run both scripts together before every commit:
+
+```bash
+composer lint && composer analyse
+```
+
+### PHPStan rules to follow
+
+- PHPStan runs at **level max** — no errors are acceptable.
+- Never use `mixed` in public method signatures; use precise types or generics.
+- Array shapes from external sources (HTTP responses, config) must be narrowed with inline `/** @var array{...} */` annotations or full `@param array{...}` docblocks before use.
+- PHPStan cannot cast from `mixed` — always narrow the type first.
+- Use `@phpstan-param` / `@phpstan-return` when the base `@param` / `@return` tag is insufficient.
+- For config values, resolve via `Illuminate\Contracts\Config\Repository` (typed) rather than `$app['config']` (returns `mixed`).
+
+### DTO conventions (enforced by static analysis)
+
+- `fromArray()` must carry a full array-shape `@param` docblock listing every key with its exact type (e.g. `array{id: string, name: string, email?: null|string, ...}`). This is the source of truth for what the API is expected to return.
+- Required string fields on request DTOs (e.g. `name`, `cpfCnpj`) must be validated against empty strings in the constructor using `mb_trim() === ''`, throwing `\InvalidArgumentException`.
+- `toArray()` strips `null` values via `array_filter`; boolean flags that default to `false` are also excluded (passed as `$flag ? true : null`).
 
 ## Running tests
 

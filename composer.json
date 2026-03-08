@@ -16,10 +16,13 @@
         "illuminate/support": "^12.53"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.94",
         "mockery/mockery": "^1.6",
         "orchestra/testbench": "^10.9",
         "pestphp/pest": "^4.4",
-        "pestphp/pest-plugin-type-coverage": "^4.0"
+        "pestphp/pest-plugin-type-coverage": "^4.0",
+        "phpstan/phpstan": "^2.1",
+        "rector/rector": "^2.3"
     },
     "autoload": {
         "psr-4": {
@@ -42,6 +45,11 @@
         }
     },
     "scripts": {
+        "lint": [
+            "rector process --memory-limit=512M --ansi",
+            "php-cs-fixer fix --allow-risky=yes --ansi"
+        ],
+        "analyse": "phpstan analyse --memory-limit=512M --ansi",
         "test": "pest",
         "test:coverage": [
             "pest --type-coverage --min=100",
