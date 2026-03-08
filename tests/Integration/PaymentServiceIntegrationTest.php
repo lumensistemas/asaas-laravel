@@ -19,6 +19,8 @@ use LumenSistemas\Asaas\DTOs\Payment\PaymentData;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentListFilters;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentListResult;
 use LumenSistemas\Asaas\DTOs\Payment\UpdatePaymentData;
+use LumenSistemas\Asaas\Enums\Payment\PaymentBillingType;
+use LumenSistemas\Asaas\Enums\Payment\PaymentStatus;
 use LumenSistemas\Asaas\Services\CustomerService;
 use LumenSistemas\Asaas\Services\PaymentService;
 
@@ -65,7 +67,7 @@ describe('PaymentService (live)', function () use ($suffix, &$customerId, &$crea
 
         $payment = livePaymentService()->create(new CreatePaymentData(
             customer: $customerId,
-            billingType: 'PIX',
+            billingType: PaymentBillingType::Pix,
             value: 10.00,
             dueDate: '2026-12-31',
             description: 'Integration test payment '.$suffix,
@@ -74,9 +76,9 @@ describe('PaymentService (live)', function () use ($suffix, &$customerId, &$crea
         expect($payment)->toBeInstanceOf(PaymentData::class)
             ->and($payment->id)->not->toBeEmpty()
             ->and($payment->customer)->toBe($customerId)
-            ->and($payment->billingType)->toBe('PIX')
+            ->and($payment->billingType)->toBe(PaymentBillingType::Pix)
             ->and($payment->value)->toBe(10.0)
-            ->and($payment->status)->toBe('PENDING');
+            ->and($payment->status)->toBe(PaymentStatus::Pending);
 
         $createdPaymentId = $payment->id;
     });

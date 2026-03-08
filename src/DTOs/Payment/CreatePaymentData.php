@@ -5,19 +5,17 @@ declare(strict_types=1);
 namespace LumenSistemas\Asaas\DTOs\Payment;
 
 use InvalidArgumentException;
+use LumenSistemas\Asaas\Enums\Payment\PaymentBillingType;
 
-readonly class CreatePaymentData
+final readonly class CreatePaymentData
 {
     /**
-     * @param null|array<string, mixed> $discount
-     * @param null|array<string, mixed> $interest
-     * @param null|array<string, mixed> $fine
-     * @param null|array<string, mixed> $split
-     * @param null|array<string, mixed> $callback
+     * @param null|array<int, array{walletId: string, fixedValue?: null|float, percentualValue?: null|float, totalFixedValue?: null|float, externalReference?: null|string, description?: null|string}> $split
+     * @param null|array{successUrl: string, autoRedirect?: null|bool} $callback
      */
     public function __construct(
         public string $customer,
-        public string $billingType,
+        public PaymentBillingType $billingType,
         public float $value,
         public string $dueDate,
         public ?string $description = null,
@@ -28,18 +26,14 @@ readonly class CreatePaymentData
         public ?float $installmentValue = null,
         public ?bool $postalService = null,
         public ?string $pixAutomaticAuthorizationId = null,
-        public ?array $discount = null,
-        public ?array $interest = null,
-        public ?array $fine = null,
+        public ?PaymentDiscount $discount = null,
+        public ?PaymentInterest $interest = null,
+        public ?PaymentFine $fine = null,
         public ?array $split = null,
         public ?array $callback = null,
     ) {
         if (mb_trim($this->customer) === '') {
             throw new InvalidArgumentException('Payment customer cannot be empty.');
-        }
-
-        if (mb_trim($this->billingType) === '') {
-            throw new InvalidArgumentException('Payment billingType cannot be empty.');
         }
 
         if (mb_trim($this->dueDate) === '') {
@@ -56,7 +50,7 @@ readonly class CreatePaymentData
     {
         return array_filter([
             'customer' => $this->customer,
-            'billingType' => $this->billingType,
+            'billingType' => $this->billingType->value,
             'value' => $this->value,
             'dueDate' => $this->dueDate,
             'description' => $this->description,
@@ -67,9 +61,9 @@ readonly class CreatePaymentData
             'installmentValue' => $this->installmentValue,
             'postalService' => $this->postalService,
             'pixAutomaticAuthorizationId' => $this->pixAutomaticAuthorizationId,
-            'discount' => $this->discount,
-            'interest' => $this->interest,
-            'fine' => $this->fine,
+            'discount' => $this->discount?->toArray(),
+            'interest' => $this->interest?->toArray(),
+            'fine' => $this->fine?->toArray(),
             'split' => $this->split,
             'callback' => $this->callback,
         ], fn (mixed $v): bool => $v !== null);

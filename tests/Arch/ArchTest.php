@@ -10,7 +10,8 @@ arch()->preset()->security();
 
 arch('DTOs are readonly classes')
     ->expect('LumenSistemas\Asaas\DTOs')
-    ->toBeReadonly();
+    ->toBeReadonly()
+    ->toBeFinal();
 
 arch('DTOs have no public setters')
     ->expect('LumenSistemas\Asaas\DTOs')

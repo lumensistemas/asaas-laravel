@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace LumenSistemas\Asaas\DTOs\Payment;
 
-readonly class PaymentData
+use LumenSistemas\Asaas\Enums\Payment\PaymentBillingType;
+use LumenSistemas\Asaas\Enums\Payment\PaymentStatus;
+
+final readonly class PaymentData
 {
     /**
-     * @param null|array<string, mixed> $discount
-     * @param null|array<string, mixed> $interest
-     * @param null|array<string, mixed> $fine
-     * @param null|array<string, mixed> $split
+     * @param null|array<int, array<string, mixed>> $split
      * @param null|array<string, mixed> $creditCard
      * @param null|array<string, mixed> $chargeback
      * @param null|array<string, mixed> $escrow
@@ -20,10 +20,10 @@ readonly class PaymentData
     public function __construct(
         public string $id,
         public string $customer,
-        public string $billingType,
+        public PaymentBillingType $billingType,
         public float $value,
         public float $netValue,
-        public string $status,
+        public PaymentStatus $status,
         public string $dueDate,
         public bool $deleted,
         public ?string $object = null,
@@ -54,9 +54,9 @@ readonly class PaymentData
         public ?string $pixQrCodeId = null,
         public ?bool $postalService = null,
         public ?int $daysAfterDueDateToRegistrationCancellation = null,
-        public ?array $discount = null,
-        public ?array $interest = null,
-        public ?array $fine = null,
+        public ?PaymentDiscount $discount = null,
+        public ?PaymentInterest $interest = null,
+        public ?PaymentFine $fine = null,
         public ?array $split = null,
         public ?array $creditCard = null,
         public ?array $chargeback = null,
@@ -103,10 +103,10 @@ readonly class PaymentData
      *     pixQrCodeId?: null|string,
      *     postalService?: null|bool,
      *     daysAfterDueDateToRegistrationCancellation?: null|int,
-     *     discount?: null|array<string, mixed>,
-     *     interest?: null|array<string, mixed>,
-     *     fine?: null|array<string, mixed>,
-     *     split?: null|array<string, mixed>,
+     *     discount?: null|array{value: float|int, dueDateLimitDays: int, type: 'FIXED'|'PERCENTAGE'},
+     *     interest?: null|array{value: float|int},
+     *     fine?: null|array{value: float|int, type?: null|'FIXED'|'PERCENTAGE'},
+     *     split?: null|array<int, array<string, mixed>>,
      *     creditCard?: null|array<string, mixed>,
      *     chargeback?: null|array<string, mixed>,
      *     escrow?: null|array<string, mixed>,
@@ -119,10 +119,10 @@ readonly class PaymentData
         return new self(
             id: $data['id'],
             customer: $data['customer'],
-            billingType: $data['billingType'],
+            billingType: PaymentBillingType::from($data['billingType']),
             value: (float) $data['value'],
             netValue: (float) $data['netValue'],
-            status: $data['status'],
+            status: PaymentStatus::from($data['status']),
             dueDate: $data['dueDate'],
             deleted: $data['deleted'],
             object: $data['object'] ?? null,
@@ -153,9 +153,9 @@ readonly class PaymentData
             pixQrCodeId: $data['pixQrCodeId'] ?? null,
             postalService: $data['postalService'] ?? null,
             daysAfterDueDateToRegistrationCancellation: $data['daysAfterDueDateToRegistrationCancellation'] ?? null,
-            discount: $data['discount'] ?? null,
-            interest: $data['interest'] ?? null,
-            fine: $data['fine'] ?? null,
+            discount: isset($data['discount']) ? PaymentDiscount::fromArray($data['discount']) : null,
+            interest: isset($data['interest']) ? PaymentInterest::fromArray($data['interest']) : null,
+            fine: isset($data['fine']) ? PaymentFine::fromArray($data['fine']) : null,
             split: $data['split'] ?? null,
             creditCard: $data['creditCard'] ?? null,
             chargeback: $data['chargeback'] ?? null,

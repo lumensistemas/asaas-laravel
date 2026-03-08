@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace LumenSistemas\Asaas\DTOs\Payment;
 
-readonly class PaymentListFilters
+use LumenSistemas\Asaas\Enums\Payment\PaymentBillingType;
+use LumenSistemas\Asaas\Enums\Payment\PaymentStatus;
+
+final readonly class PaymentListFilters
 {
     public function __construct(
         public int $offset = 0,
         public int $limit = 10,
         public ?string $customer = null,
-        public ?string $billingType = null,
-        public ?string $status = null,
+        public ?PaymentBillingType $billingType = null,
+        public ?PaymentStatus $status = null,
         public ?string $subscription = null,
         public ?string $installment = null,
         public ?string $externalReference = null,
@@ -44,12 +47,12 @@ readonly class PaymentListFilters
             $params['customer'] = $this->customer;
         }
 
-        if ($this->billingType !== null) {
-            $params['billingType'] = $this->billingType;
+        if ($this->billingType instanceof PaymentBillingType) {
+            $params['billingType'] = $this->billingType->value;
         }
 
-        if ($this->status !== null) {
-            $params['status'] = $this->status;
+        if ($this->status instanceof PaymentStatus) {
+            $params['status'] = $this->status->value;
         }
 
         if ($this->subscription !== null) {

@@ -6,6 +6,8 @@ use LumenSistemas\Asaas\DTOs\Payment\PaymentData;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentListFilters;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentListResult;
 use LumenSistemas\Asaas\DTOs\Payment\UpdatePaymentData;
+use LumenSistemas\Asaas\Enums\Payment\PaymentBillingType;
+use LumenSistemas\Asaas\Enums\Payment\PaymentStatus;
 use LumenSistemas\Asaas\Exceptions\AsaasApiException;
 use LumenSistemas\Asaas\Services\PaymentService;
 
@@ -61,7 +63,7 @@ describe('PaymentService::list()', function (): void {
         $service = app(PaymentService::class);
         $service->list(new PaymentListFilters(
             customer: 'cus_abc',
-            status: 'PENDING',
+            status: PaymentStatus::Pending,
             dueDateGe: '2026-01-01',
         ));
 
@@ -83,7 +85,7 @@ describe('PaymentService::find()', function (): void {
 
         expect($payment)->toBeInstanceOf(PaymentData::class)
             ->and($payment->id)->toBe('pay_123')
-            ->and($payment->status)->toBe('PENDING');
+            ->and($payment->status)->toBe(PaymentStatus::Pending);
 
         Http::assertSent(
             fn ($request): bool => $request->method() === 'GET'
@@ -99,7 +101,7 @@ describe('PaymentService::create()', function (): void {
         $service = app(PaymentService::class);
         $payment = $service->create(new CreatePaymentData(
             customer: 'cus_abc',
-            billingType: 'PIX',
+            billingType: PaymentBillingType::Pix,
             value: 100.0,
             dueDate: '2026-04-01',
             description: 'Test payment',
@@ -126,7 +128,7 @@ describe('PaymentService::create()', function (): void {
         $service = app(PaymentService::class);
         $service->create(new CreatePaymentData(
             customer: 'cus_invalid',
-            billingType: 'PIX',
+            billingType: PaymentBillingType::Pix,
             value: 100.0,
             dueDate: '2026-04-01',
         ));
@@ -192,7 +194,7 @@ describe('PaymentService::refund()', function (): void {
         $payment = $service->refund('pay_123', 50.0, 'Partial refund');
 
         expect($payment)->toBeInstanceOf(PaymentData::class)
-            ->and($payment->status)->toBe('REFUNDED');
+            ->and($payment->status)->toBe(PaymentStatus::Refunded);
 
         Http::assertSent(
             fn ($request): bool => $request->method() === 'POST'
@@ -224,7 +226,7 @@ describe('PaymentService::receiveInCash()', function (): void {
         $payment = $service->receiveInCash('pay_123', '2026-03-08', 100.0, true);
 
         expect($payment)->toBeInstanceOf(PaymentData::class)
-            ->and($payment->status)->toBe('RECEIVED_IN_CASH');
+            ->and($payment->status)->toBe(PaymentStatus::ReceivedInCash);
 
         Http::assertSent(
             fn ($request): bool => $request->method() === 'POST'

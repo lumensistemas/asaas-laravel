@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LumenSistemas\Asaas\DTOs\Payment;
 
-readonly class PaymentListResult
+final readonly class PaymentListResult
 {
     /** @param PaymentData[] $data */
     public function __construct(
@@ -54,10 +54,10 @@ readonly class PaymentListResult
      *         pixQrCodeId?: null|string,
      *         postalService?: null|bool,
      *         daysAfterDueDateToRegistrationCancellation?: null|int,
-     *         discount?: null|array<string, mixed>,
-     *         interest?: null|array<string, mixed>,
-     *         fine?: null|array<string, mixed>,
-     *         split?: null|array<string, mixed>,
+     *         discount?: null|array{value: float|int, dueDateLimitDays: int, type: 'FIXED'|'PERCENTAGE'},
+     *         interest?: null|array{value: float|int},
+     *         fine?: null|array{value: float|int, type?: null|'FIXED'|'PERCENTAGE'},
+     *         split?: null|array<int, array<string, mixed>>,
      *         creditCard?: null|array<string, mixed>,
      *         chargeback?: null|array<string, mixed>,
      *         escrow?: null|array<string, mixed>,
