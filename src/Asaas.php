@@ -6,6 +6,7 @@ namespace LumenSistemas\Asaas;
 
 use LumenSistemas\Asaas\Contracts\AsaasClientInterface;
 use LumenSistemas\Asaas\Services\CustomerService;
+use LumenSistemas\Asaas\Services\PaymentService;
 
 final readonly class Asaas
 {
@@ -25,5 +26,10 @@ final readonly class Asaas
     public function customers(): CustomerService
     {
         return new CustomerService($this->client);
+    }
+
+    public function payments(): PaymentService
+    {
+        return new PaymentService($this->client);
     }
 }

@@ -1,0 +1,167 @@
+<?php
+
+declare(strict_types=1);
+
+namespace LumenSistemas\Asaas\DTOs\Payment;
+
+readonly class PaymentData
+{
+    /**
+     * @param null|array<string, mixed> $discount
+     * @param null|array<string, mixed> $interest
+     * @param null|array<string, mixed> $fine
+     * @param null|array<string, mixed> $split
+     * @param null|array<string, mixed> $creditCard
+     * @param null|array<string, mixed> $chargeback
+     * @param null|array<string, mixed> $escrow
+     * @param null|array<string, mixed> $refunds
+     * @param null|array<string, mixed> $callback
+     */
+    public function __construct(
+        public string $id,
+        public string $customer,
+        public string $billingType,
+        public float $value,
+        public float $netValue,
+        public string $status,
+        public string $dueDate,
+        public bool $deleted,
+        public ?string $object = null,
+        public ?string $dateCreated = null,
+        public ?string $subscription = null,
+        public ?string $installment = null,
+        public ?string $checkoutSession = null,
+        public ?string $paymentLink = null,
+        public ?float $originalValue = null,
+        public ?float $interestValue = null,
+        public ?string $description = null,
+        public ?string $originalDueDate = null,
+        public ?string $paymentDate = null,
+        public ?string $clientPaymentDate = null,
+        public ?bool $canBePaidAfterDueDate = null,
+        public ?string $externalReference = null,
+        public ?string $invoiceUrl = null,
+        public ?string $invoiceNumber = null,
+        public ?string $nossoNumero = null,
+        public ?string $bankSlipUrl = null,
+        public ?string $transactionReceiptUrl = null,
+        public ?string $creditDate = null,
+        public ?string $estimatedCreditDate = null,
+        public ?bool $anticipated = null,
+        public ?bool $anticipable = null,
+        public ?int $installmentNumber = null,
+        public ?string $pixTransaction = null,
+        public ?string $pixQrCodeId = null,
+        public ?bool $postalService = null,
+        public ?int $daysAfterDueDateToRegistrationCancellation = null,
+        public ?array $discount = null,
+        public ?array $interest = null,
+        public ?array $fine = null,
+        public ?array $split = null,
+        public ?array $creditCard = null,
+        public ?array $chargeback = null,
+        public ?array $escrow = null,
+        public ?array $refunds = null,
+        public ?array $callback = null,
+    ) {}
+
+    /**
+     * @param array{
+     *     id: string,
+     *     customer: string,
+     *     billingType: string,
+     *     value: float|int,
+     *     netValue: float|int,
+     *     status: string,
+     *     dueDate: string,
+     *     deleted: bool,
+     *     object?: null|string,
+     *     dateCreated?: null|string,
+     *     subscription?: null|string,
+     *     installment?: null|string,
+     *     checkoutSession?: null|string,
+     *     paymentLink?: null|string,
+     *     originalValue?: null|float|int,
+     *     interestValue?: null|float|int,
+     *     description?: null|string,
+     *     originalDueDate?: null|string,
+     *     paymentDate?: null|string,
+     *     clientPaymentDate?: null|string,
+     *     canBePaidAfterDueDate?: null|bool,
+     *     externalReference?: null|string,
+     *     invoiceUrl?: null|string,
+     *     invoiceNumber?: null|string,
+     *     nossoNumero?: null|string,
+     *     bankSlipUrl?: null|string,
+     *     transactionReceiptUrl?: null|string,
+     *     creditDate?: null|string,
+     *     estimatedCreditDate?: null|string,
+     *     anticipated?: null|bool,
+     *     anticipable?: null|bool,
+     *     installmentNumber?: null|int,
+     *     pixTransaction?: null|string,
+     *     pixQrCodeId?: null|string,
+     *     postalService?: null|bool,
+     *     daysAfterDueDateToRegistrationCancellation?: null|int,
+     *     discount?: null|array<string, mixed>,
+     *     interest?: null|array<string, mixed>,
+     *     fine?: null|array<string, mixed>,
+     *     split?: null|array<string, mixed>,
+     *     creditCard?: null|array<string, mixed>,
+     *     chargeback?: null|array<string, mixed>,
+     *     escrow?: null|array<string, mixed>,
+     *     refunds?: null|array<string, mixed>,
+     *     callback?: null|array<string, mixed>,
+     * } $data
+     */
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            id: $data['id'],
+            customer: $data['customer'],
+            billingType: $data['billingType'],
+            value: (float) $data['value'],
+            netValue: (float) $data['netValue'],
+            status: $data['status'],
+            dueDate: $data['dueDate'],
+            deleted: $data['deleted'],
+            object: $data['object'] ?? null,
+            dateCreated: $data['dateCreated'] ?? null,
+            subscription: $data['subscription'] ?? null,
+            installment: $data['installment'] ?? null,
+            checkoutSession: $data['checkoutSession'] ?? null,
+            paymentLink: $data['paymentLink'] ?? null,
+            originalValue: isset($data['originalValue']) ? (float) $data['originalValue'] : null,
+            interestValue: isset($data['interestValue']) ? (float) $data['interestValue'] : null,
+            description: $data['description'] ?? null,
+            originalDueDate: $data['originalDueDate'] ?? null,
+            paymentDate: $data['paymentDate'] ?? null,
+            clientPaymentDate: $data['clientPaymentDate'] ?? null,
+            canBePaidAfterDueDate: $data['canBePaidAfterDueDate'] ?? null,
+            externalReference: $data['externalReference'] ?? null,
+            invoiceUrl: $data['invoiceUrl'] ?? null,
+            invoiceNumber: $data['invoiceNumber'] ?? null,
+            nossoNumero: $data['nossoNumero'] ?? null,
+            bankSlipUrl: $data['bankSlipUrl'] ?? null,
+            transactionReceiptUrl: $data['transactionReceiptUrl'] ?? null,
+            creditDate: $data['creditDate'] ?? null,
+            estimatedCreditDate: $data['estimatedCreditDate'] ?? null,
+            anticipated: $data['anticipated'] ?? null,
+            anticipable: $data['anticipable'] ?? null,
+            installmentNumber: $data['installmentNumber'] ?? null,
+            pixTransaction: $data['pixTransaction'] ?? null,
+            pixQrCodeId: $data['pixQrCodeId'] ?? null,
+            postalService: $data['postalService'] ?? null,
+            daysAfterDueDateToRegistrationCancellation: $data['daysAfterDueDateToRegistrationCancellation'] ?? null,
+            discount: $data['discount'] ?? null,
+            interest: $data['interest'] ?? null,
+            fine: $data['fine'] ?? null,
+            split: $data['split'] ?? null,
+            creditCard: $data['creditCard'] ?? null,
+            chargeback: $data['chargeback'] ?? null,
+            escrow: $data['escrow'] ?? null,
+            refunds: $data['refunds'] ?? null,
+            callback: $data['callback'] ?? null,
+        );
+    }
+}
