@@ -7,11 +7,13 @@ namespace LumenSistemas\Asaas\Facades;
 use Illuminate\Support\Facades\Facade;
 use LumenSistemas\Asaas\Services\CustomerService;
 use LumenSistemas\Asaas\Services\PaymentService;
+use LumenSistemas\Asaas\Services\WebhookService;
 
 /**
  * @method static \LumenSistemas\Asaas\Asaas withApiKey(string $apiKey)
  * @method static CustomerService customers()
  * @method static PaymentService payments()
+ * @method static WebhookService webhooks()
  *
  * @see \LumenSistemas\Asaas\Asaas
  */
