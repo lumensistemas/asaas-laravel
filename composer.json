@@ -16,6 +16,7 @@
         "illuminate/support": "^12.53"
     },
     "require-dev": {
+        "beyondcode/expose": "^3.2",
         "friendsofphp/php-cs-fixer": "^3.94",
         "mockery/mockery": "^1.6",
         "orchestra/testbench": "^10.9",
