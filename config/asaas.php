@@ -36,4 +36,17 @@ return [
     'timeout'         => env('ASAAS_TIMEOUT', 30),
     'connect_timeout' => env('ASAAS_CONNECT_TIMEOUT', 10),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Webhook Auth Token
+    |--------------------------------------------------------------------------
+    |
+    | The authToken you set when creating an Asaas webhook configuration.
+    | Asaas sends this value in the asaas-access-token header on every
+    | incoming webhook request. The VerifyAsaasWebhook middleware uses it to
+    | authenticate incoming requests.
+    |
+    */
+    'webhook_token' => env('ASAAS_WEBHOOK_TOKEN', ''),
+
 ];

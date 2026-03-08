@@ -6,7 +6,7 @@ namespace LumenSistemas\Asaas\DTOs\Customer;
 
 use InvalidArgumentException;
 
-readonly class CreateCustomerData
+final readonly class CreateCustomerData
 {
     public function __construct(
         public string $name,

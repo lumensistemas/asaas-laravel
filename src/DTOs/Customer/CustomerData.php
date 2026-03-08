@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LumenSistemas\Asaas\DTOs\Customer;
 
-readonly class CustomerData
+final readonly class CustomerData
 {
     public function __construct(
         public string $id,

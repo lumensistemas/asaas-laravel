@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LumenSistemas\Asaas\DTOs\Customer;
 
-readonly class CustomerListFilters
+final readonly class CustomerListFilters
 {
     public function __construct(
         public int $offset = 0,

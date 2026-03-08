@@ -6,8 +6,10 @@ namespace LumenSistemas\Asaas;
 
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use LumenSistemas\Asaas\Contracts\AsaasClientInterface;
+use LumenSistemas\Asaas\Http\Middleware\VerifyAsaasWebhook;
 use Override;
 
 class AsaasServiceProvider extends ServiceProvider
@@ -41,5 +43,9 @@ class AsaasServiceProvider extends ServiceProvider
                 __DIR__.'/../config/asaas.php' => config_path('asaas.php'),
             ], 'asaas-config');
         }
+
+        /** @var Router $router */
+        $router = $this->app->make(Router::class);
+        $router->aliasMiddleware('asaas.webhook', VerifyAsaasWebhook::class);
     }
 }

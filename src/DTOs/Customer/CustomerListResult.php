@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LumenSistemas\Asaas\DTOs\Customer;
 
-readonly class CustomerListResult
+final readonly class CustomerListResult
 {
     /** @param CustomerData[] $data */
     public function __construct(

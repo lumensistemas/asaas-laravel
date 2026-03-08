@@ -1,4 +1,4 @@
-# asaas-laravel
+# ASaaS Laravel Client
 
 A typed PHP client for the [Asaas](https://www.asaas.com/) payment API (v3), built for Laravel 12.
 
@@ -34,6 +34,7 @@ ASAAS_ENVIRONMENT=sandbox   # or production
 |---|---|---|
 | `ASAAS_API_KEY` | _(empty)_ | Default API key |
 | `ASAAS_ENVIRONMENT` | `sandbox` | `sandbox` or `production` |
+| `ASAAS_WEBHOOK_TOKEN` | _(empty)_ | Token for incoming webhook verification |
 
 ## Usage
 
@@ -209,6 +210,73 @@ Asaas::webhooks()->delete('wbh_000000000001');
 // Clear backoff penalty
 Asaas::webhooks()->removeBackoff('wbh_000000000001');
 ```
+
+## Handling incoming webhooks
+
+### 1. Generate a token
+
+Use `WebhookSignatureGenerator` to create a secure random token when registering a webhook:
+
+```php
+use LumenSistemas\Asaas\Webhook\WebhookSignatureGenerator;
+
+$token = (new WebhookSignatureGenerator())->generate(); // 64-char hex string
+
+$webhook = Asaas::webhooks()->create(new CreateWebhookData(
+    url: 'https://example.com/webhooks/asaas',
+    events: [WebhookEvent::PaymentReceived],
+    authToken: $token,
+));
+```
+
+Store `$token` in your `.env` as `ASAAS_WEBHOOK_TOKEN`.
+
+### 2. Verify incoming requests
+
+The `asaas.webhook` middleware reads `ASAAS_WEBHOOK_TOKEN` from config and rejects requests whose `asaas-access-token` header doesn't match (HTTP 401):
+
+```php
+// routes/api.php
+Route::post('/webhooks/asaas', WebhookController::class)
+    ->middleware('asaas.webhook');
+```
+
+Or verify manually:
+
+```php
+use LumenSistemas\Asaas\Webhook\WebhookSignatureVerifier;
+
+$verifier = new WebhookSignatureVerifier();
+if (! $verifier->verify($request->headers->all(), config('asaas.webhook_token'))) {
+    abort(401);
+}
+```
+
+### 3. Handle events
+
+```php
+use LumenSistemas\Asaas\DTOs\Webhook\WebhookEventPayload;
+use LumenSistemas\Asaas\Enums\Webhook\WebhookEvent;
+use LumenSistemas\Asaas\Webhook\WebhookHandler;
+
+$payload = WebhookEventPayload::fromJson($request->getContent());
+
+$handler = new WebhookHandler();
+$handler
+    ->on(WebhookEvent::PaymentReceived, function (WebhookEventPayload $p): void {
+        // $p->payment is a typed PaymentData instance
+    })
+    ->on(WebhookEvent::PaymentOverdue, function (WebhookEventPayload $p): void {
+        // handle overdue
+    })
+    ->onAny(function (WebhookEventPayload $p): void {
+        // called for every event type
+    });
+
+$handler->handle($payload);
+```
+
+For payment events (`PAYMENT_*`), `$payload->payment` is a fully typed `PaymentData` instance. For all other event types it is `null`.
 
 ## Error handling
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LumenSistemas\Asaas\DTOs\Customer;
 
-readonly class UpdateCustomerData
+final readonly class UpdateCustomerData
 {
     public function __construct(
         public ?string $name = null,

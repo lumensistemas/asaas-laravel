@@ -15,7 +15,7 @@ arch('DTOs are readonly classes')
 
 arch('DTOs have no public setters')
     ->expect('LumenSistemas\Asaas\DTOs')
-    ->not->toHavePublicMethodsBesides(['__construct', 'toArray', 'fromArray']);
+    ->not->toHavePublicMethodsBesides(['__construct', 'toArray', 'fromArray', 'fromJson']);
 
 arch('DTOs do not depend on Laravel or the HTTP client')
     ->expect('LumenSistemas\Asaas\DTOs')
