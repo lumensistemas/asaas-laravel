@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "php": ">=8.5",
+        "php": ">=8.4",
         "illuminate/http": "^12.53",
         "illuminate/support": "^12.53"
     },
