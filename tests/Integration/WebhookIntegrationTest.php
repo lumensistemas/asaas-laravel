@@ -133,10 +133,10 @@ describe('Webhook event delivery (live)', function () use ($webhookUrl, $suffix,
             ],
             name: 'Integration test webhook '.$suffix,
             email: sprintf('webhook-integration-%s@example.com', $suffix),
+            sendType: WebhookSendType::Sequentially,
             enabled: true,
             interrupted: false,
             authToken: $token !== '' ? $token : null,
-            sendType: WebhookSendType::Sequentially,
         ));
 
         expect($webhook->id)->not->toBeEmpty();

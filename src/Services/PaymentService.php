@@ -6,6 +6,7 @@ namespace LumenSistemas\Asaas\Services;
 
 use LumenSistemas\Asaas\Contracts\AsaasClientInterface;
 use LumenSistemas\Asaas\DTOs\Payment\CreatePaymentData;
+use LumenSistemas\Asaas\DTOs\Payment\PaymentBillingInfoData;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentData;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentListFilters;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentListResult;
@@ -98,6 +99,14 @@ class PaymentService
         $response = $this->client->post(sprintf('/v3/payments/%s/receiveInCash', $id), $payload);
 
         return PaymentData::fromArray($response);
+    }
+
+    public function getBillingInfo(string $id): PaymentBillingInfoData
+    {
+        /** @var array{pix?: null|array{encodedImage?: null|string, payload?: null|string, expirationDate?: null|string, description?: null|string}, creditCard?: null|array{creditCardNumber?: null|string, creditCardBrand?: null|string, creditCardToken?: null|string}, bankSlip?: null|array{identificationField?: null|string, nossoNumero?: null|string, barCode?: null|string, bankSlipUrl?: null|string, daysAfterDueDateToRegistrationCancellation?: null|int}} $response */
+        $response = $this->client->get(sprintf('/v3/payments/%s/billingInfo', $id));
+
+        return PaymentBillingInfoData::fromArray($response);
     }
 
     public function getStatus(string $id): string

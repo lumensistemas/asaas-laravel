@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Facades\Http;
 use LumenSistemas\Asaas\DTOs\Payment\CreatePaymentData;
+use LumenSistemas\Asaas\DTOs\Payment\PaymentBillingInfoBankSlipData;
+use LumenSistemas\Asaas\DTOs\Payment\PaymentBillingInfoCreditCardData;
+use LumenSistemas\Asaas\DTOs\Payment\PaymentBillingInfoData;
+use LumenSistemas\Asaas\DTOs\Payment\PaymentBillingInfoPixData;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentData;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentListFilters;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentListResult;
@@ -273,5 +277,90 @@ describe('PaymentService::getPixQrCode()', function (): void {
             fn ($request): bool => $request->method() === 'GET'
             && str_ends_with((string) $request->url(), '/v3/payments/pay_123/pixQrCode')
         );
+    });
+});
+
+describe('PaymentService::getBillingInfo()', function (): void {
+    it('returns PaymentBillingInfoData with pix data hydrated', function (): void {
+        Http::fake(['*' => Http::response([
+            'pix' => [
+                'encodedImage' => 'base64==',
+                'payload' => '00020101021226...',
+                'expirationDate' => '2026-04-01 23:59:59',
+                'description' => 'Test charge',
+            ],
+        ])]);
+
+        $service = app(PaymentService::class);
+        $result = $service->getBillingInfo('pay_123');
+
+        expect($result)->toBeInstanceOf(PaymentBillingInfoData::class)
+            ->and($result->pix)->toBeInstanceOf(PaymentBillingInfoPixData::class)
+            ->and($result->pix->encodedImage)->toBe('base64==')
+            ->and($result->pix->payload)->toBe('00020101021226...')
+            ->and($result->pix->expirationDate)->toBe('2026-04-01 23:59:59')
+            ->and($result->pix->description)->toBe('Test charge')
+            ->and($result->creditCard)->toBeNull()
+            ->and($result->bankSlip)->toBeNull();
+
+        Http::assertSent(
+            fn ($request): bool => $request->method() === 'GET'
+            && str_ends_with((string) $request->url(), '/v3/payments/pay_123/billingInfo')
+        );
+    });
+
+    it('returns PaymentBillingInfoData with creditCard data hydrated', function (): void {
+        Http::fake(['*' => Http::response([
+            'creditCard' => [
+                'creditCardNumber' => '8829',
+                'creditCardBrand' => 'VISA',
+                'creditCardToken' => 'a75a1d98-c52d-4a6b-a413-71e00b193c99',
+            ],
+        ])]);
+
+        $service = app(PaymentService::class);
+        $result = $service->getBillingInfo('pay_123');
+
+        expect($result)->toBeInstanceOf(PaymentBillingInfoData::class)
+            ->and($result->creditCard)->toBeInstanceOf(PaymentBillingInfoCreditCardData::class)
+            ->and($result->creditCard->creditCardNumber)->toBe('8829')
+            ->and($result->creditCard->creditCardBrand)->toBe('VISA')
+            ->and($result->creditCard->creditCardToken)->toBe('a75a1d98-c52d-4a6b-a413-71e00b193c99')
+            ->and($result->pix)->toBeNull()
+            ->and($result->bankSlip)->toBeNull();
+    });
+
+    it('returns PaymentBillingInfoData with bankSlip data hydrated', function (): void {
+        Http::fake(['*' => Http::response([
+            'bankSlip' => [
+                'identificationField' => '00190000090275928800021932978170187890000005000',
+                'nossoNumero' => '6543',
+                'barCode' => '00191878900000050000000002759288002193297817',
+                'bankSlipUrl' => 'https://www.asaas.com/b/pdf/080225913252',
+                'daysAfterDueDateToRegistrationCancellation' => 1,
+            ],
+        ])]);
+
+        $service = app(PaymentService::class);
+        $result = $service->getBillingInfo('pay_123');
+
+        expect($result)->toBeInstanceOf(PaymentBillingInfoData::class)
+            ->and($result->bankSlip)->toBeInstanceOf(PaymentBillingInfoBankSlipData::class)
+            ->and($result->bankSlip->identificationField)->toBe('00190000090275928800021932978170187890000005000')
+            ->and($result->bankSlip->nossoNumero)->toBe('6543')
+            ->and($result->bankSlip->barCode)->toBe('00191878900000050000000002759288002193297817')
+            ->and($result->bankSlip->bankSlipUrl)->toBe('https://www.asaas.com/b/pdf/080225913252')
+            ->and($result->bankSlip->daysAfterDueDateToRegistrationCancellation)->toBe(1)
+            ->and($result->pix)->toBeNull()
+            ->and($result->creditCard)->toBeNull();
+    });
+
+    it('throws AsaasApiException on API error', function (): void {
+        Http::fake(['*' => Http::response(['errors' => [['code' => 'invalid_id', 'description' => 'Payment not found']]], 404)]);
+
+        $service = app(PaymentService::class);
+
+        expect(fn () => $service->getBillingInfo('pay_invalid'))
+            ->toThrow(AsaasApiException::class);
     });
 });
