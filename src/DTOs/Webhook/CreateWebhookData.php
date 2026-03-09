@@ -14,13 +14,13 @@ final readonly class CreateWebhookData
     public function __construct(
         public string $url,
         public array $events,
-        public ?string $name = null,
-        public ?string $email = null,
-        public ?bool $enabled = null,
-        public ?bool $interrupted = null,
+        public string $name,
+        public string $email,
+        public WebhookSendType $sendType,
+        public bool $enabled = true,
+        public bool $interrupted = false,
         public ?int $apiVersion = null,
         public ?string $authToken = null,
-        public ?WebhookSendType $sendType = null,
     ) {
         if (mb_trim($this->url) === '') {
             throw new InvalidArgumentException('Webhook url cannot be empty.');
@@ -28,6 +28,14 @@ final readonly class CreateWebhookData
 
         if ($this->events === []) {
             throw new InvalidArgumentException('Webhook events cannot be empty.');
+        }
+
+        if (mb_trim($this->name) === '') {
+            throw new InvalidArgumentException('Webhook name cannot be empty.');
+        }
+
+        if (mb_trim($this->email) === '') {
+            throw new InvalidArgumentException('Webhook email cannot be empty.');
         }
     }
 
@@ -39,11 +47,11 @@ final readonly class CreateWebhookData
             'events' => array_map(fn (WebhookEvent $e): string => $e->value, $this->events),
             'name' => $this->name,
             'email' => $this->email,
+            'sendType' => $this->sendType->value,
             'enabled' => $this->enabled,
             'interrupted' => $this->interrupted,
             'apiVersion' => $this->apiVersion,
             'authToken' => $this->authToken,
-            'sendType' => $this->sendType?->value,
         ], fn (mixed $v): bool => $v !== null);
     }
 }

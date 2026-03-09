@@ -83,6 +83,7 @@ describe('WebhookService::create()', function (): void {
             url: 'https://example.com/webhook',
             events: [WebhookEvent::PaymentReceived, WebhookEvent::PaymentConfirmed],
             name: 'My Webhook',
+            email: 'dev@example.com',
             sendType: WebhookSendType::Sequentially,
         ));
 
@@ -107,16 +108,23 @@ describe('WebhookService::create()', function (): void {
         app(WebhookService::class)->create(new CreateWebhookData(
             url: 'https://example.com/webhook',
             events: [WebhookEvent::PaymentReceived],
+            name: 'My Webhook',
+            email: 'dev@example.com',
+            sendType: WebhookSendType::Sequentially,
         ));
     })->throws(AsaasApiException::class);
 
     it('throws when url is empty', function (): void {
-        new CreateWebhookData(url: '', events: [WebhookEvent::PaymentReceived]);
+        new CreateWebhookData(url: '', events: [WebhookEvent::PaymentReceived], name: 'My Webhook', email: 'dev@example.com', sendType: WebhookSendType::Sequentially);
     })->throws(InvalidArgumentException::class, 'Webhook url cannot be empty.');
 
     it('throws when events list is empty', function (): void {
-        new CreateWebhookData(url: 'https://example.com/webhook', events: []);
+        new CreateWebhookData(url: 'https://example.com/webhook', events: [], name: 'My Webhook', email: 'dev@example.com', sendType: WebhookSendType::Sequentially);
     })->throws(InvalidArgumentException::class, 'Webhook events cannot be empty.');
+
+    it('throws when name is empty', function (): void {
+        new CreateWebhookData(url: 'https://example.com/webhook', events: [WebhookEvent::PaymentReceived], name: '', email: 'dev@example.com', sendType: WebhookSendType::Sequentially);
+    })->throws(InvalidArgumentException::class, 'Webhook name cannot be empty.');
 });
 
 describe('WebhookService::update()', function (): void {
