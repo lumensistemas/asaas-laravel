@@ -23,6 +23,11 @@ class PaymentService
         private readonly AsaasClientInterface $client,
     ) {}
 
+    /**
+     * List payments, optionally filtered by the given criteria.
+     *
+     * @see https://docs.asaas.com/reference/listar-cobrancas
+     */
     public function list(?PaymentListFilters $filters = null): PaymentListResult
     {
         $query = $filters instanceof PaymentListFilters ? $filters->toArray() : [];
@@ -32,6 +37,11 @@ class PaymentService
         return PaymentListResult::fromArray($response);
     }
 
+    /**
+     * Retrieve a single payment by its ID.
+     *
+     * @see https://docs.asaas.com/reference/recuperar-uma-unica-cobranca
+     */
     public function find(string $id): PaymentData
     {
         /** @var PaymentArray $response */
@@ -40,6 +50,11 @@ class PaymentService
         return PaymentData::fromArray($response);
     }
 
+    /**
+     * Create a new payment.
+     *
+     * @see https://docs.asaas.com/reference/criar-nova-cobranca
+     */
     public function create(CreatePaymentData $data): PaymentData
     {
         /** @var PaymentArray $response */
@@ -48,6 +63,11 @@ class PaymentService
         return PaymentData::fromArray($response);
     }
 
+    /**
+     * Update an existing payment.
+     *
+     * @see https://docs.asaas.com/reference/atualizar-cobranca-existente
+     */
     public function update(string $id, UpdatePaymentData $data): PaymentData
     {
         /** @var PaymentArray $response */
@@ -56,6 +76,11 @@ class PaymentService
         return PaymentData::fromArray($response);
     }
 
+    /**
+     * Delete (soft-delete) a payment.
+     *
+     * @see https://docs.asaas.com/reference/remover-cobranca
+     */
     public function delete(string $id): bool
     {
         /** @var array{deleted?: bool} $response */
@@ -64,6 +89,11 @@ class PaymentService
         return $response['deleted'] ?? false;
     }
 
+    /**
+     * Restore a previously deleted payment.
+     *
+     * @see https://docs.asaas.com/reference/restaurar-cobranca-removida
+     */
     public function restore(string $id): PaymentData
     {
         /** @var PaymentArray $response */
@@ -72,6 +102,11 @@ class PaymentService
         return PaymentData::fromArray($response);
     }
 
+    /**
+     * Refund a confirmed payment, optionally specifying a partial value.
+     *
+     * @see https://docs.asaas.com/reference/estornar-cobranca
+     */
     public function refund(string $id, ?float $value = null, ?string $description = null): PaymentData
     {
         $payload = array_filter([
@@ -85,6 +120,11 @@ class PaymentService
         return PaymentData::fromArray($response);
     }
 
+    /**
+     * Mark a payment as received in cash outside of Asaas.
+     *
+     * @see https://docs.asaas.com/reference/confirmar-recebimento-em-dinheiro
+     */
     public function receiveInCash(
         string $id,
         string $paymentDate,
@@ -103,6 +143,11 @@ class PaymentService
         return PaymentData::fromArray($response);
     }
 
+    /**
+     * Retrieve the digitable bill line, nosso número and bar code for a bank slip payment.
+     *
+     * @see https://docs.asaas.com/reference/recuperar-linha-digitavel-de-cobranca
+     */
     public function getIdentificationField(string $id): PaymentBillingInfoBankSlipData
     {
         /** @var array{identificationField?: null|string, nossoNumero?: null|string, barCode?: null|string} $response */
@@ -111,6 +156,11 @@ class PaymentService
         return PaymentBillingInfoBankSlipData::fromArray($response);
     }
 
+    /**
+     * Retrieve billing info for a payment (Pix QR code, credit card token, or bank slip data).
+     *
+     * @see https://docs.asaas.com/reference/recuperar-informacoes-de-cobranca
+     */
     public function getBillingInfo(string $id): PaymentBillingInfoData
     {
         /** @var array{pix?: null|array{encodedImage?: null|string, payload?: null|string, expirationDate?: null|string, description?: null|string}, creditCard?: null|array{creditCardNumber?: null|string, creditCardBrand?: null|string, creditCardToken?: null|string}, bankSlip?: null|array{identificationField?: null|string, nossoNumero?: null|string, barCode?: null|string, bankSlipUrl?: null|string, daysAfterDueDateToRegistrationCancellation?: null|int}} $response */
@@ -119,6 +169,11 @@ class PaymentService
         return PaymentBillingInfoData::fromArray($response);
     }
 
+    /**
+     * Retrieve the current status of a payment.
+     *
+     * @see https://docs.asaas.com/reference/recuperar-status-de-cobranca
+     */
     public function getStatus(string $id): string
     {
         /** @var array{status: string} $response */
@@ -127,6 +182,11 @@ class PaymentService
         return $response['status'];
     }
 
+    /**
+     * Retrieve the Pix QR code (encoded image and copy-paste payload) for a Pix payment.
+     *
+     * @see https://docs.asaas.com/reference/recuperar-qr-code-para-pagamento-via-pix
+     */
     public function getPixQrCode(string $id): PaymentPixData
     {
         /** @var array{encodedImage?: null|string, payload?: null|string, expirationDate?: null|string, description?: null|string} $response */
