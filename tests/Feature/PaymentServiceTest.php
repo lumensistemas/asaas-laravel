@@ -258,6 +258,40 @@ describe('PaymentService::getStatus()', function (): void {
     });
 });
 
+describe('PaymentService::getIdentificationField()', function (): void {
+    it('returns a hydrated PaymentBillingInfoBankSlipData', function (): void {
+        Http::fake(['*' => Http::response([
+            'identificationField' => '00190000090275928800021932978170187890000005000',
+            'nossoNumero' => '6543',
+            'barCode' => '00191878900000050000000002759288002193297817',
+        ])]);
+
+        $service = app(PaymentService::class);
+        $result = $service->getIdentificationField('pay_123');
+
+        expect($result)->toBeInstanceOf(PaymentBillingInfoBankSlipData::class)
+            ->and($result->identificationField)->toBe('00190000090275928800021932978170187890000005000')
+            ->and($result->nossoNumero)->toBe('6543')
+            ->and($result->barCode)->toBe('00191878900000050000000002759288002193297817')
+            ->and($result->bankSlipUrl)->toBeNull()
+            ->and($result->daysAfterDueDateToRegistrationCancellation)->toBeNull();
+
+        Http::assertSent(
+            fn ($request): bool => $request->method() === 'GET'
+            && str_ends_with((string) $request->url(), '/v3/payments/pay_123/identificationField')
+        );
+    });
+
+    it('throws AsaasApiException on API error', function (): void {
+        Http::fake(['*' => Http::response(['errors' => [['code' => 'invalid_id', 'description' => 'Payment not found']]], 404)]);
+
+        $service = app(PaymentService::class);
+
+        expect(fn () => $service->getIdentificationField('pay_invalid'))
+            ->toThrow(AsaasApiException::class);
+    });
+});
+
 describe('PaymentService::getPixQrCode()', function (): void {
     it('returns a hydrated PaymentPixData', function (): void {
         Http::fake(['*' => Http::response([
