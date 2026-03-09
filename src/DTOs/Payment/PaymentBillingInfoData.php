@@ -7,7 +7,7 @@ namespace LumenSistemas\Asaas\DTOs\Payment;
 final readonly class PaymentBillingInfoData
 {
     public function __construct(
-        public ?PaymentBillingInfoPixData $pix = null,
+        public ?PaymentPixData $pix = null,
         public ?PaymentBillingInfoCreditCardData $creditCard = null,
         public ?PaymentBillingInfoBankSlipData $bankSlip = null,
     ) {}
@@ -22,7 +22,7 @@ final readonly class PaymentBillingInfoData
     public static function fromArray(array $data): self
     {
         return new self(
-            pix: isset($data['pix']) ? PaymentBillingInfoPixData::fromArray($data['pix']) : null,
+            pix: isset($data['pix']) ? PaymentPixData::fromArray($data['pix']) : null,
             creditCard: isset($data['creditCard']) ? PaymentBillingInfoCreditCardData::fromArray($data['creditCard']) : null,
             bankSlip: isset($data['bankSlip']) ? PaymentBillingInfoBankSlipData::fromArray($data['bankSlip']) : null,
         );

@@ -10,6 +10,7 @@ use LumenSistemas\Asaas\DTOs\Payment\PaymentBillingInfoData;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentData;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentListFilters;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentListResult;
+use LumenSistemas\Asaas\DTOs\Payment\PaymentPixData;
 use LumenSistemas\Asaas\DTOs\Payment\UpdatePaymentData;
 
 /**
@@ -117,12 +118,11 @@ class PaymentService
         return $response['status'];
     }
 
-    /** @return array<string, mixed> */
-    public function getPixQrCode(string $id): array
+    public function getPixQrCode(string $id): PaymentPixData
     {
-        /** @var array<string, mixed> $response */
+        /** @var array{encodedImage?: null|string, payload?: null|string, expirationDate?: null|string, description?: null|string} $response */
         $response = $this->client->get(sprintf('/v3/payments/%s/pixQrCode', $id));
 
-        return $response;
+        return PaymentPixData::fromArray($response);
     }
 }

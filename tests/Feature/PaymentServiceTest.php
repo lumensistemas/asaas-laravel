@@ -5,10 +5,10 @@ use LumenSistemas\Asaas\DTOs\Payment\CreatePaymentData;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentBillingInfoBankSlipData;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentBillingInfoCreditCardData;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentBillingInfoData;
-use LumenSistemas\Asaas\DTOs\Payment\PaymentBillingInfoPixData;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentData;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentListFilters;
 use LumenSistemas\Asaas\DTOs\Payment\PaymentListResult;
+use LumenSistemas\Asaas\DTOs\Payment\PaymentPixData;
 use LumenSistemas\Asaas\DTOs\Payment\UpdatePaymentData;
 use LumenSistemas\Asaas\Enums\Payment\PaymentBillingType;
 use LumenSistemas\Asaas\Enums\Payment\PaymentStatus;
@@ -259,19 +259,22 @@ describe('PaymentService::getStatus()', function (): void {
 });
 
 describe('PaymentService::getPixQrCode()', function (): void {
-    it('returns the Pix QR code array', function (): void {
-        $qrPayload = [
+    it('returns a hydrated PaymentPixData', function (): void {
+        Http::fake(['*' => Http::response([
             'encodedImage' => 'base64string==',
             'payload' => '00020126...',
             'expirationDate' => '2026-04-01 23:59:59',
-        ];
-
-        Http::fake(['*' => Http::response($qrPayload)]);
+            'description' => 'Test charge',
+        ])]);
 
         $service = app(PaymentService::class);
         $result = $service->getPixQrCode('pay_123');
 
-        expect($result)->toBe($qrPayload);
+        expect($result)->toBeInstanceOf(PaymentPixData::class)
+            ->and($result->encodedImage)->toBe('base64string==')
+            ->and($result->payload)->toBe('00020126...')
+            ->and($result->expirationDate)->toBe('2026-04-01 23:59:59')
+            ->and($result->description)->toBe('Test charge');
 
         Http::assertSent(
             fn ($request): bool => $request->method() === 'GET'
@@ -295,7 +298,7 @@ describe('PaymentService::getBillingInfo()', function (): void {
         $result = $service->getBillingInfo('pay_123');
 
         expect($result)->toBeInstanceOf(PaymentBillingInfoData::class)
-            ->and($result->pix)->toBeInstanceOf(PaymentBillingInfoPixData::class)
+            ->and($result->pix)->toBeInstanceOf(PaymentPixData::class)
             ->and($result->pix->encodedImage)->toBe('base64==')
             ->and($result->pix->payload)->toBe('00020101021226...')
             ->and($result->pix->expirationDate)->toBe('2026-04-01 23:59:59')

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LumenSistemas\Asaas\DTOs\Payment;
 
-final readonly class PaymentBillingInfoPixData
+final readonly class PaymentPixData
 {
     public function __construct(
         public ?string $encodedImage = null,
