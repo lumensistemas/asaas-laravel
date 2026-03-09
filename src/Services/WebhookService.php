@@ -19,6 +19,11 @@ class WebhookService
         private readonly AsaasClientInterface $client,
     ) {}
 
+    /**
+     * List all configured webhooks.
+     *
+     * @see https://docs.asaas.com/reference/listar-webhooks
+     */
     public function list(): WebhookListResult
     {
         /** @var array{data?: array<int, WebhookArray>, hasMore?: bool, totalCount?: int, limit?: int, offset?: int} $response */
@@ -27,6 +32,11 @@ class WebhookService
         return WebhookListResult::fromArray($response);
     }
 
+    /**
+     * Retrieve a single webhook configuration by its ID.
+     *
+     * @see https://docs.asaas.com/reference/recuperar-um-unico-webhook
+     */
     public function find(string $id): WebhookData
     {
         /** @var WebhookArray $response */
@@ -35,6 +45,11 @@ class WebhookService
         return WebhookData::fromArray($response);
     }
 
+    /**
+     * Create a new webhook configuration.
+     *
+     * @see https://docs.asaas.com/reference/criar-novo-webhook
+     */
     public function create(CreateWebhookData $data): WebhookData
     {
         /** @var WebhookArray $response */
@@ -43,6 +58,11 @@ class WebhookService
         return WebhookData::fromArray($response);
     }
 
+    /**
+     * Update an existing webhook configuration.
+     *
+     * @see https://docs.asaas.com/reference/atualizar-webhook-existente
+     */
     public function update(string $id, UpdateWebhookData $data): WebhookData
     {
         /** @var WebhookArray $response */
@@ -51,6 +71,11 @@ class WebhookService
         return WebhookData::fromArray($response);
     }
 
+    /**
+     * Delete a webhook configuration.
+     *
+     * @see https://docs.asaas.com/reference/remover-webhook
+     */
     public function delete(string $id): bool
     {
         /** @var array{deleted?: bool} $response */
@@ -59,6 +84,11 @@ class WebhookService
         return $response['deleted'] ?? false;
     }
 
+    /**
+     * Remove the backoff penalty from a webhook that was interrupted due to consecutive failures.
+     *
+     * @see https://docs.asaas.com/reference/remover-backoff-de-webhook
+     */
     public function removeBackoff(string $id): WebhookData
     {
         /** @var WebhookArray $response */
