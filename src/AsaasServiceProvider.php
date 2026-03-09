@@ -27,9 +27,9 @@ class AsaasServiceProvider extends ServiceProvider
 
             return new AsaasClient(
                 environment: AsaasEnvironment::from($config['environment'] ?? 'sandbox'),
-                defaultApiKey: $config['api_key'] ?? '',
-                timeout: $config['timeout'] ?? 30,
-                connectTimeout: $config['connect_timeout'] ?? 10,
+                defaultApiKey: (string) ($config['api_key'] ?? ''),
+                timeout: (int) ($config['timeout'] ?? 30),
+                connectTimeout: (int) ($config['connect_timeout'] ?? 10),
             );
         });
 
