@@ -17,6 +17,11 @@ class CustomerService
         private readonly AsaasClientInterface $client,
     ) {}
 
+    /**
+     * List customers, optionally filtered by the given criteria.
+     *
+     * @see https://docs.asaas.com/reference/listar-clientes
+     */
     public function list(?CustomerListFilters $filters = null): CustomerListResult
     {
         $query = $filters instanceof CustomerListFilters ? $filters->toArray() : [];
@@ -26,6 +31,11 @@ class CustomerService
         return CustomerListResult::fromArray($response);
     }
 
+    /**
+     * Retrieve a single customer by its ID.
+     *
+     * @see https://docs.asaas.com/reference/recuperar-um-unico-cliente
+     */
     public function find(string $id): CustomerData
     {
         /** @var array{id: string, name: string, cpfCnpj: string, personType?: string, deleted?: bool, dateCreated?: null|string, email?: null|string, phone?: null|string, mobilePhone?: null|string, address?: null|string, addressNumber?: null|string, complement?: null|string, province?: null|string, city?: null|int, cityName?: null|string, state?: null|string, country?: null|string, postalCode?: null|string, additionalEmails?: null|string, externalReference?: null|string, notificationDisabled?: bool, observations?: null|string, foreignCustomer?: bool, groupName?: null|string, company?: null|string} $response */
@@ -34,6 +44,11 @@ class CustomerService
         return CustomerData::fromArray($response);
     }
 
+    /**
+     * Create a new customer.
+     *
+     * @see https://docs.asaas.com/reference/criar-novo-cliente
+     */
     public function create(CreateCustomerData $data): CustomerData
     {
         /** @var array{id: string, name: string, cpfCnpj: string, personType?: string, deleted?: bool, dateCreated?: null|string, email?: null|string, phone?: null|string, mobilePhone?: null|string, address?: null|string, addressNumber?: null|string, complement?: null|string, province?: null|string, city?: null|int, cityName?: null|string, state?: null|string, country?: null|string, postalCode?: null|string, additionalEmails?: null|string, externalReference?: null|string, notificationDisabled?: bool, observations?: null|string, foreignCustomer?: bool, groupName?: null|string, company?: null|string} $response */
@@ -42,6 +57,11 @@ class CustomerService
         return CustomerData::fromArray($response);
     }
 
+    /**
+     * Update an existing customer.
+     *
+     * @see https://docs.asaas.com/reference/atualizar-cliente-existente
+     */
     public function update(string $id, UpdateCustomerData $data): CustomerData
     {
         /** @var array{id: string, name: string, cpfCnpj: string, personType?: string, deleted?: bool, dateCreated?: null|string, email?: null|string, phone?: null|string, mobilePhone?: null|string, address?: null|string, addressNumber?: null|string, complement?: null|string, province?: null|string, city?: null|int, cityName?: null|string, state?: null|string, country?: null|string, postalCode?: null|string, additionalEmails?: null|string, externalReference?: null|string, notificationDisabled?: bool, observations?: null|string, foreignCustomer?: bool, groupName?: null|string, company?: null|string} $response */
@@ -50,6 +70,11 @@ class CustomerService
         return CustomerData::fromArray($response);
     }
 
+    /**
+     * Delete (soft-delete) a customer.
+     *
+     * @see https://docs.asaas.com/reference/remover-cliente
+     */
     public function delete(string $id): bool
     {
         /** @var array{deleted?: bool} $response */
@@ -58,6 +83,11 @@ class CustomerService
         return $response['deleted'] ?? false;
     }
 
+    /**
+     * Restore a previously deleted customer.
+     *
+     * @see https://docs.asaas.com/reference/restaurar-cliente-removido
+     */
     public function restore(string $id): CustomerData
     {
         /** @var array{id: string, name: string, cpfCnpj: string, personType?: string, deleted?: bool, dateCreated?: null|string, email?: null|string, phone?: null|string, mobilePhone?: null|string, address?: null|string, addressNumber?: null|string, complement?: null|string, province?: null|string, city?: null|int, cityName?: null|string, state?: null|string, country?: null|string, postalCode?: null|string, additionalEmails?: null|string, externalReference?: null|string, notificationDisabled?: bool, observations?: null|string, foreignCustomer?: bool, groupName?: null|string, company?: null|string} $response */
