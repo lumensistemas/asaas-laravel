@@ -28,5 +28,6 @@ class IntegrationTestCase extends BaseTestCase
     {
         $app['config']->set('asaas.api_key', (string) env('ASAAS_TEST_API_KEY', ''));
         $app['config']->set('asaas.environment', (string) env('ASAAS_TEST_ENV', 'sandbox'));
+        $app['config']->set('asaas.webhook_token', (string) env('ASAAS_WEBHOOK_TOKEN', ''));
     }
 }

@@ -307,6 +307,36 @@ export ASAAS_TEST_API_KEY="your_sandbox_key"
 ./vendor/bin/pest --testsuite=Integration
 ```
 
+### Webhook integration tests
+
+Webhook delivery tests require a public URL that Asaas can reach. Use [expose](https://expose.dev) (already in `require-dev`) to tunnel to the local test server.
+
+**Step 1 — Start the webhook server** (in a separate terminal):
+
+```bash
+composer webhook:serve
+# or with a custom port:
+ASAAS_WEBHOOK_SERVER_PORT=9876 composer webhook:serve
+```
+
+**Step 2 — Expose it publicly** (in another terminal):
+
+```bash
+expose share http://localhost:9876
+# Note the generated HTTPS URL, e.g. https://abc123.sharedwithexpose.com
+```
+
+**Step 3 — Export environment variables and run**:
+
+```bash
+export ASAAS_TEST_API_KEY="your_sandbox_key"
+export ASAAS_WEBHOOK_URL="https://abc123.sharedwithexpose.com"
+export ASAAS_WEBHOOK_TOKEN="your_secret_token"   # must match the token used when creating the webhook
+./vendor/bin/pest --testsuite=Integration --filter=Webhook
+```
+
+The server records every incoming `POST` body to a temp directory. Tests poll `GET http://localhost:PORT/events` until the expected event arrives (up to 30 s). Cleanup is automatic via `afterAll`.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).

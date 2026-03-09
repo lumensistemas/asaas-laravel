@@ -55,6 +55,10 @@
         "test:coverage": [
             "pest --type-coverage --min=100",
             "pest --coverage --min=90"
+        ],
+        "webhook:serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "php -S localhost:${ASAAS_WEBHOOK_SERVER_PORT:-9876} scripts/webhook-server.php"
         ]
     },
     "config": {
