@@ -60,6 +60,16 @@
             "php -S localhost:${ASAAS_WEBHOOK_SERVER_PORT:-9876} scripts/webhook-server.php"
         ]
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LumenSistemas\\Asaas\\AsaasServiceProvider"
+            ],
+            "aliases": {
+                "Asaas": "LumenSistemas\\Asaas\\Facades\\Asaas"
+            }
+        }
+    },
     "config": {
         "sort-packages": true,
         "allow-plugins": {
