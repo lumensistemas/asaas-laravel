@@ -29,6 +29,7 @@ jobs:
         id: create-pr
         uses: peter-evans/create-pull-request@v8
         with:
+          token: ${{ secrets.PAT_TOKEN }}
           branch: changelog/${{ github.event.release.tag_name }}
           commit-message: Update CHANGELOG for ${{ github.event.release.name }}
           title: Update CHANGELOG for ${{ github.event.release.name }}
